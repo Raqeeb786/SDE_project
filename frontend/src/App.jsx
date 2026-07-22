@@ -4,6 +4,7 @@ import "./App.css";
 function App() {
   const [users, setUsers] = useState([]);
   const [username, setUsername] = useState("");
+  const [password, setPassword]= useState("");
 
   const API_URL = "http://127.0.0.1:8000";
 
@@ -16,6 +17,7 @@ function App() {
 
   async function createUser() {
     if (!username.trim()) return;
+    if (!password.trim()) return (alert('Password cant be empty!'));
 
     const response = await fetch(`${API_URL}/users/`, {
       method: "POST",
@@ -24,6 +26,7 @@ function App() {
       },
       body: JSON.stringify({
         username: username,
+        password: password,
       }),
     });
 
@@ -55,6 +58,13 @@ function App() {
         onChange={(e) => setUsername(e.target.value)}
       />
 
+      <input
+        type="password"
+        placeholder="Enter Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        />
+        
       <button onClick={createUser}>
         Create User
       </button>
@@ -71,6 +81,11 @@ function App() {
           ))
         }
       </ul>
+
+      <br>
+      </br>
+
+      <button>clcik me not</button>
 
     </section>
   );

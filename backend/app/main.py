@@ -5,7 +5,7 @@ from app.database import Base, engine
 from app.models import user
 from app.routes.user import router as user_router
 
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="My Backend API",
