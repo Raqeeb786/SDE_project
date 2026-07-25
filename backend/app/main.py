@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
 from app.models import user
 from app.routes.user import router as user_router
+from app.routes.auth import router as auth_router
 
 #Base.metadata.create_all(bind=engine)
 
@@ -16,6 +17,7 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",  # Vite default
     "http://127.0.0.1:5173",
+    "https://opulent-space-spork-45rp7rjrpqw274gj-5173.app.github.dev"
 ]
 
 app.add_middleware(
@@ -27,6 +29,7 @@ app.add_middleware(
 )
 
 app.include_router(user_router)
+app.include_router(auth_router)
 
 @app.get("/", tags=["Health"])
 async def health_check():

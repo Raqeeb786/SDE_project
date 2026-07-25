@@ -6,3 +6,6 @@ alembic
 redis
 python-dotenv
 pydantic-settings
+passlib
+python-jose
+

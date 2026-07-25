@@ -1,12 +1,14 @@
 import { useState } from "react";
+import {useNavigate} from 'react-router-dom';
 
 function LoginPage() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate= useNavigate();
 
     async function register(){
-        const response = await fetch("http://localhost:8000/users/",
+        const response = await fetch("https://opulent-space-spork-45rp7rjrpqw274gj-8000.app.github.dev/auth/register",
             {
                 method:'POST',
                 headers:{
@@ -22,7 +24,8 @@ function LoginPage() {
     }
 
     async function login(){
-        const response= await fetch("http://localhost:8000/users/login",
+        // const response= await fetch("http://localhost:8000/auth/login",
+        const response= await fetch("https://opulent-space-spork-45rp7rjrpqw274gj-8000.app.github.dev/auth/login",
             {
                 method:'POST',
                 headers:{
