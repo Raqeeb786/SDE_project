@@ -36,7 +36,13 @@ function LoginPage() {
                     password: password
                 })
             });
+        if (!response.ok) {
+            console.error("Login failed:", response.statusText);
+            return;
+        }
         const data = await response.json();
+        sessionStorage.setItem("access_token" , data.access_token);
+        navigate('/home');
         console.log("Logged in:", data);
     }
 

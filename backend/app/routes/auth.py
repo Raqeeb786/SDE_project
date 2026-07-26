@@ -93,13 +93,15 @@ def register(new_user:UserCreate , db: Session=Depends(get_db)):
 
 @router.get('/me')
 def me(token: str = Depends(oauth2_scheme),db: Session=Depends(get_db)):
+    #print(token)
     try:
         payload = jwt.decode(
             token,
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
-    except:
+    except Exception as e:
+        print(f"Error decoding token: {e}")
         raise HTTPException(
             status_code=401,
             detail="Invalid token"
