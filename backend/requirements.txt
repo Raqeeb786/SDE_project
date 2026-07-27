@@ -8,4 +8,4 @@ python-dotenv
 pydantic-settings
 passlib
 python-jose
-
+websockets
