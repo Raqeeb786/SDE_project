@@ -42,7 +42,7 @@ function LoginPage() {
         }
         const data = await response.json();
         sessionStorage.setItem("access_token" , data.access_token);
-        navigate('/home');
+        navigate('/lobby');
         console.log("Logged in:", data);
     }
 

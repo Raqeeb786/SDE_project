@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 
 function HomePage(){
     const [username, setUsername] = useState("");
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const { room_id } = useParams();
     const socketRef = useRef(null);
 
     async function getUsername(){
@@ -28,13 +30,16 @@ function HomePage(){
 
     useEffect(() => {
         getUsername();
-        const socket = new WebSocket(
-        "wss://opulent-space-spork-45rp7rjrpqw274gj-8000.app.github.dev/ws/chat?token=" + sessionStorage.getItem("access_token")
+        // const socket = new WebSocket(
+        // "wss://opulent-space-spork-45rp7rjrpqw274gj-8000.app.github.dev/ws/chat?token=" + sessionStorage.getItem("access_token")
+        // );
+        const token = sessionStorage.getItem("access_token");
+        const ws = new WebSocket(
+            `wss://opulent-space-spork-45rp7rjrpqw274gj-8000.app.github.dev/ws/chat?token=${token}&room_id=${room_id}`
         );
+        socketRef.current = ws;
 
-        socketRef.current = socket;
-
-        socket.onopen = () => {
+        ws.onopen = () => {
             console.log("Connected");
         };
 
@@ -42,7 +47,7 @@ function HomePage(){
         //     setMessages((prev) => [...prev, event.data]);
         // };
 
-        socket.onmessage = (event) => {
+        ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
             switch (data.type) {
                 case "chat":
@@ -53,12 +58,12 @@ function HomePage(){
                     break;
             }
         };
-                socket.onclose = () => {
+                ws.onclose = () => {
             console.log("Disconnected");
         };
 
         return () => {
-            socket.close();
+            ws.close();
         };
         }, []);
 

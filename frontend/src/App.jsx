@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/loginPage";
-import HomePage from "./pages/homePage";
+import HomePage from "./pages/arena";
+import Lobby from "./pages/lobby";
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -10,13 +11,22 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route
-            path="/home"
-            element={
-                <ProtectedRoute>
-                    <HomePage />
-                </ProtectedRoute>
-            }
+          path="/lobby"
+          element={
+            <ProtectedRoute>
+              <Lobby />
+            </ProtectedRoute>
+          }
         />
+        <Route
+          path="/room/:room_id"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        
       </Routes>
     </BrowserRouter>
   );

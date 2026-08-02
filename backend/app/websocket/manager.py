@@ -1,5 +1,6 @@
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from fastapi import WebSocket
 from app.websocket.model import ConnectedUser
+from app.websocket.room_manager import room_manager
 import json
 
 
@@ -39,13 +40,32 @@ class ConnectionManager:
                 payload
             )
 
+    async def broadcast_room_users(self, room_id: str):
+        players = room_manager.get_players(room_id)
+        payload = {
+            "type": "user_list",
+            "users": list(players)
+        }
+        for username in players:
+            user = self.active_connections.get(username)
+            if user:
+                await self.send_json(user.websocket, payload)
 
 
-    async def broadcast(self, username: str, message: str):
-        for user in self.active_connections.values():
-            # await user.websocket.send_text(
-            #     f"{username}: {message}"
-            # )
-            await self.send_json(user.websocket,{"type":"chat", "sender":username , "message":message})
+
+    async def broadcast(self, room_id: str, username: str, message: str):
+        # users_in_room = room_manager.rooms.get(room_id, set())
+        users_in_room = room_manager.get_players(room_id)
+        for username_in_room in users_in_room:
+            user = self.active_connections.get(username_in_room)
+            if user:
+                await self.send_json(
+                    user.websocket,
+                    {
+                        "type": "chat",
+                        "sender": username,
+                        "message": message
+                    }
+                )
             
     
