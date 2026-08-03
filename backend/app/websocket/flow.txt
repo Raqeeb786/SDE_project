@@ -1,41 +1,21 @@
-Component mounts
-        │
-        ▼
-React renders UI
-        │
-        ▼
-useEffect runs (once)
-        │
-        ├── Fetch username
-        │
-        ├── Open WebSocket
-        │
-        ├── Register onopen
-        │
-        ├── Register onmessage
-        │
-        └── Register onclose
-        │
-        ▼
-User clicks Send
-        │
-        ▼
-socket.send(message)
-        │
-        ▼
-FastAPI receives message
-        │
-        ▼
+React
+ |
+ | JSON event
+ ↓
+FastAPI WebSocket
+ |
+ | receive_json()
+ ↓
+WebSocketEvent schema
+ |
+ ↓
+EventRouter
+ |
+ ↓
+ChatHandler
+ |
+ ↓
 ConnectionManager.broadcast()
-        │
-        ▼
-Browser receives message
-        │
-        ▼
-onmessage callback runs
-        │
-        ▼
-setMessages(...)
-        │
-        ▼
-React re-renders the UI with the new message
+ |
+ ↓
+Room players

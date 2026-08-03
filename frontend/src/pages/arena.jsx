@@ -58,9 +58,14 @@ function HomePage(){
                     break;
             }
         };
-                ws.onclose = () => {
+            ws.onclose = (event) => {
             console.log("Disconnected");
+            console.log("Code:", event.code);
+            console.log("Reason:", event.reason);
         };
+        //         ws.onclose = () => {
+        //     console.log("Disconnected");
+        // };
 
         return () => {
             ws.close();
@@ -93,7 +98,15 @@ function HomePage(){
                     socketRef.current &&
                     socketRef.current.readyState === WebSocket.OPEN
                 ) {
-                    socketRef.current.send(message);
+                    // socketRef.current.send(message);
+                    const event = {
+                        type: "chat",
+                        payload: {
+                            message: message,
+                        },
+                    };
+
+                    socketRef.current.send(JSON.stringify(event));
                     setMessage("");
                 }
             }}

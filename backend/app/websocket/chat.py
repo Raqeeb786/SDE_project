@@ -1,6 +1,8 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
 from app.websocket.manager import ConnectionManager
 from app.websocket.room_manager import room_manager
+from app.websocket.events.schemas import WebSocketEvent
+from app.websocket.events.router import event_router
 from jose import jwt
 
 manager= ConnectionManager()
@@ -31,17 +33,25 @@ async def websocket_endpoint(
     await manager.broadcast_room_users(room_id)
     try:
         while True:
-            message= await websocket.receive_text()
-            if not message.strip():
-                continue
-            await manager.broadcast(
-                room_id,
-                username,
-                message
-            )
+            data = await websocket.receive_json()
+            print(f"Received data: {data}")
+            event= WebSocketEvent(**data)
+            print(f"Handling event: {event}")
+            await event_router.handle(event , username ,room_id , manager)
+            # message= await websocket.receive_text()
+            # if not message.strip():
+            #     continue
+            # await manager.broadcast(
+            #     room_id,
+            #     username,
+            #     message
+            # )
     except WebSocketDisconnect:
+        print('Client Disconnected')
+    except Exception as e:
+        print(f"WebSocket error: {e}")
+    finally:
         room_manager.leave_room(room_id, username)
         manager.disconnect(websocket)
-        print('Client Disconnected')
         # await manager.broadcast_active_users()
         await manager.broadcast_room_users(room_id)
