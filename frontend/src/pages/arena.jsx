@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import OnlineUsers from "../components/OnlineUsers";
 
 function HomePage(){
     const [username, setUsername] = useState("");
@@ -56,6 +57,9 @@ function HomePage(){
                 case "user_list":
                     setOnlineUsers(data.users);
                     break;
+                case "game_started":
+                    console.log("Game started!", data.payload);
+                    break;
             }
         };
             ws.onclose = (event) => {
@@ -76,15 +80,7 @@ function HomePage(){
         <><h1>ARENA</h1>
         <h2>Welcome {username}</h2>
 
-        <h3>Online Users</h3>
-        <ul>
-            {onlineUsers.map(user => (
-                <li key={user}>
-                    🟢 {user}
-                </li>
-            ))}
-
-        </ul>
+        <OnlineUsers onlineUsers={onlineUsers} />
 
         <input 
             placeholder="Type your message..." 

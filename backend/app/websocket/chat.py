@@ -3,6 +3,7 @@ from app.websocket.manager import ConnectionManager
 from app.websocket.room_manager import room_manager
 from app.websocket.events.schemas import WebSocketEvent
 from app.websocket.events.router import event_router
+from app.websocket.game.manager import game_manager
 from jose import jwt
 
 manager= ConnectionManager()
@@ -29,6 +30,26 @@ async def websocket_endpoint(
     username,
     websocket
 )
+    players = room_manager.get_players(room_id)
+    if len(players) == 2:
+        game = game_manager.create_game(
+            room_id,
+            list(players)
+        )
+        print(f"Chess game created for room {room_id}")
+    
+    await manager.broadcast_event(
+        room_id,
+        {
+            "type": "game_started",
+            "payload": {
+                "white": game.players["white"],
+                "black": game.players["black"],
+                "turn": game.turn
+            }
+        }
+    )
+        
     # await manager.broadcast_active_users()
     await manager.broadcast_room_users(room_id)
     try:

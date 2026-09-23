@@ -67,5 +67,15 @@ class ConnectionManager:
                         "message": message
                     }
                 )
+        
+    async def broadcast_event(self, room_id: str, event: dict):
+    players = room_manager.get_players(room_id)
+    for username in players:
+        user = self.active_connections.get(username)
+        if user:
+            await self.send_json(
+                user.websocket,
+                event
+            )
             
     
